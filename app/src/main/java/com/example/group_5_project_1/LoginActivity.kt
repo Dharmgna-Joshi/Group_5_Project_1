@@ -43,6 +43,8 @@ class LoginActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Please enter email and password.", Toast.LENGTH_SHORT).show()
             }
+//            startActivity(Intent(this, MainActivity::class.java))
+////                            finish()
         }
         SignUpButton.setOnClickListener {
             startActivity(Intent(this, SignUpActivity::class.java))

@@ -2,6 +2,7 @@ package com.example.group_5_project_1
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.group_5_project_1.databinding.ActivityProductBinding
@@ -25,7 +26,7 @@ class ProductActivity : AppCompatActivity() {
 
 
         val rView : RecyclerView = findViewById(R.id.products_recycler_view)
-        rView.layoutManager = LinearLayoutManager(this)
+        rView.layoutManager = GridLayoutManager(this, 2)
         rView.adapter = adapter
 
     }

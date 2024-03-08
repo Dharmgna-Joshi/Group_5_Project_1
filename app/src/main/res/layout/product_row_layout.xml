@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-
     card_view:cardCornerRadius="8dp"
     card_view:cardElevation="4dp">
 
@@ -25,6 +24,7 @@
             android:id="@+id/textViewProductName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="italic"
             android:textColor="@color/black"
             android:text="Product Name" />
 
@@ -33,6 +33,7 @@
             android:id="@+id/textViewProductPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="italic"
             android:textColor="@color/black"
             android:text="Product prize" />
     </LinearLayout>

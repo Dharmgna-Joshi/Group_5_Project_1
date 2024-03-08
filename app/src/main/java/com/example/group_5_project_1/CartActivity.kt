@@ -15,63 +15,65 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 
+class CartActivity : AppCompatActivity() {
 
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: CartAdapter
+    private var cartItems = mutableListOf<CartItem>()
 
-    class CartActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_cart)
 
-        private lateinit var recyclerView: RecyclerView
-        private lateinit var adapter: CartAdapter
-        private var cartItems = mutableListOf<CartItem>()
+        recyclerView = findViewById(R.id.cartRecyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = CartAdapter(cartItems)
+        recyclerView.adapter = adapter
 
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            setContentView(R.layout.activity_cart)
-
-            recyclerView = findViewById(R.id.cartRecyclerView)
-            recyclerView.layoutManager = LinearLayoutManager(this)
-            adapter = CartAdapter(cartItems)
-            recyclerView.adapter = adapter
-
-            loadUserCart()
-            val moveToProduct = findViewById<Button>(R.id.movetoproduct)
-            moveToProduct.setOnClickListener {
-                val intent = Intent(
-                    this@CartActivity,
-                    ProductActivity::class.java
-                )
-                startActivity(intent)
-            }
-            val CheckoutForm = findViewById<Button>(R.id.checkout)
-            CheckoutForm.setOnClickListener {
-                val intent = Intent(
-                    this@CartActivity,
-                    CheckOutActivity::class.java
-                )
-                startActivity(intent)
-            }
+        loadUserCart()
+        val moveToProduct = findViewById<Button>(R.id.movetoproduct)
+        moveToProduct.setOnClickListener {
+            val intent = Intent(
+                this@CartActivity,
+                ProductActivity::class.java
+            )
+            startActivity(intent)
         }
-
-        private fun loadUserCart() {
-            val currentUser = FirebaseAuth.getInstance().currentUser
-            val userID = currentUser?.uid
-
-            if (userID != null) {
-                val userCartRef = FirebaseDatabase.getInstance().getReference("Carts").child(userID)
-                userCartRef.addValueEventListener(object : ValueEventListener {
-                    @SuppressLint("NotifyDataSetChanged")
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        cartItems.clear()
-                        for (cartItemSnapshot in dataSnapshot.children) {
-                            val cartItem = cartItemSnapshot.getValue(CartItem::class.java)
-                            Log.d("CartActivity", "Fetched item: ${cartItem?.name} with prize: ${cartItem?.prize}")
-                            cartItem?.let { cartItems.add(it) }
-                        }
-                        adapter.notifyDataSetChanged()
-                    }
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        Log.w("CartActivity", "loadUserCart:onCancelled", databaseError.toException())
-                    }
-                })
-            }
+        val CheckoutForm = findViewById<Button>(R.id.checkout)
+        CheckoutForm.setOnClickListener {
+            val intent = Intent(
+                this@CartActivity,
+                CheckOutActivity::class.java
+            )
+            startActivity(intent)
         }
     }
+
+    private fun loadUserCart() {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        val userID = currentUser?.uid
+
+        if (userID != null) {
+            val userCartRef = FirebaseDatabase.getInstance().getReference("Carts").child(userID)
+            userCartRef.addValueEventListener(object : ValueEventListener {
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    cartItems.clear()
+                    for (cartItemSnapshot in dataSnapshot.children) {
+                        val cartItem = cartItemSnapshot.getValue(CartItem::class.java)
+                        Log.d(
+                            "CartActivity",
+                            "Fetched item: ${cartItem?.name} with prize: ${cartItem?.prize}"
+                        )
+                        cartItem?.let { cartItems.add(it) }
+                    }
+                    adapter.notifyDataSetChanged()
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Log.w("CartActivity", "loadUserCart:onCancelled", databaseError.toException())
+                }
+            })
+        }
+    }
+}
